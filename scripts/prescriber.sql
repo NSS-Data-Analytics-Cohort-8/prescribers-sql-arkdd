@@ -79,17 +79,21 @@ LIMIT 10;
 -- 4. 
 --     a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
--- SELECT drug_name
--- FROM drug
--- CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
--- WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
--- ELSE 'neither' END AS drug_type
-
+SELECT drug_name,
+CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
+	 WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+     ELSE 'neither' END AS drug_type
+FROM drug
 
 
 
 --     b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
 
+SELECT drug_name,
+CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
+	 WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+     ELSE 'neither' END AS drug_type
+FROM drug;
 
 
 
@@ -133,17 +137,66 @@ LIMIT 1;
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
 
-SELECT 
-FROM prepscription      
-WHERE
+SELECT drug_name, total_claim_count
+FROM prescription    
+WHERE total_claim_count>= 3000;
 
+
+-- "LEVOTHYROXINE SODIUM"
+-- "MIRTAZAPINE"
+-- "FUROSEMIDE"
+-- "HYDROCODONE-ACETAMINOPHEN"
+-- "GABAPENTIN"
+-- "LISINOPRIL"
+-- "OXYCODONE HCL"
+-- "LEVOTHYROXINE SODIUM"
+-- "LEVOTHYROXINE SODIUM"
 
 
 --     b. For each instance that you found in part a, add a column that indicates whether the drug is an opioid.
 
+SELECT drug.drug_name, total_claim_count, opioid_drug_flag,
+CASE WHEN opioid_drug_flag = 'Y' THEN 'Yes'
+	 WHEN opioid_drug_flag = 'N' THEN 'No'
+ELSE 'Unknown' END AS opioid
+FROM prescription 
+LEFT JOIN drug
+ON prescription.drug_name = drug.drug_name
+WHERE total_claim_count>= 3000;
+
+
+
 --     c. Add another column to you answer from the previous part which gives the prescriber first and last name associated with each row.
 
+
+SELECT drug.drug_name, total_claim_count, opioid_drug_flag,
+CASE WHEN opioid_drug_flag = 'Y' THEN 'Yes'
+	 WHEN opioid_drug_flag = 'N' THEN 'No'
+ELSE 'Unknown' END AS opioid
+FROM prescription 
+LEFT JOIN drug
+ON prescription.drug_name = drug.drug_name
+WHERE total_claim_count>= 3000
+SELECT nppes_provider_first_name, 
+      'nppes_provider_first_name' AS name
+FROM prescriber)
+UNION
+(SELECT prescriber, 
+      'nppes_provider_last_name' AS name
+FROM prescriber);
+
+
+
+
 -- 7. The goal of this exercise is to generate a full list of all pain management specialists in Nashville and the number of claims they had for each opioid. **Hint:** The results from all 3 parts will have 637 rows.
+
+SELECT prescriber.npi, specialty_description
+FROM prescriber
+LEFT JOIN prescription
+ON prescriber.npi = prescription.npi
+LEFT JOIN
+ON
+
 
 --     a. First, create a list of all npi/drug_name combinations for pain management specialists (specialty_description = 'Pain Managment') in the city of Nashville (nppes_provider_city = 'NASHVILLE'), where the drug is an opioid (opiod_drug_flag = 'Y'). **Warning:** Double-check your query before running it. You will only need to use the prescriber and drug tables since you don't need the claims numbers yet.
 
